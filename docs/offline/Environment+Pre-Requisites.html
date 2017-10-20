@@ -1,0 +1,92 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>Kafka Detective — Environment Pre-Requisites</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Using+Kafka+Detective.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Configuring+Detective.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <h2 id="Environment+Pre-Requisites">Environment Pre-Requisites<a href="#Environment+Pre-Requisites" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Detective works by attaching to two topics. A <strong>test topic</strong> representing the code you’d like to
+eventually deploy to production (for many this is a staging environment) and a <strong>reference
+environment</strong> that is your known good (for many this is their production environment). Detective
+makes a few assumptions about the state of the environment it’s going to be attached to.
+Specifically those assumptions are:
+</p><ul><li>The respective environments <em>should</em> be producing the exact same data.
+</li><li>The two topics you’re monitoring need to have the same number of partitions.
+</li><li>The environments are in a healthy state when Kafka Detective is first connected. Specifically:
+</li><li>The environments are performing at the same speed.
+</li><li>The data coming out of the environments matches.
+</li><li>The environments are processing the same inputs.
+</li></ul><p>Additionally, to work best Kafka Detective needs a few things to be present in your infrastructure:
+</p><ul><li>A Graphite Carbon host to feed metrics into.
+</li><li>Ideally, a Grafana instance (or something similar) dashboarding from those metrics.
+</li><li>An ElasticSearch instance for Detective to report errors to.
+</li><li>Ideally, a Kibana instance (or something similar) to analyze failures reported to ES.
+</li></ul><p>If all of the above conditions are true, Kafka Detective should be able to start producing
+meaningful output in your environment pretty quickly.
+</p><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Configuring+Detective.html"> Configuring Detective </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="index.html">Kafka Detective</a></div><ol class="toc"> <li><div><a href="How+Detective+Works.html">How Detective Works</a></div><ol class="toc"> <li><div><a href="High-Level+Overview.html">High-Level Overview</a></div></li> </ol></li><li><div><a href="Extending+Kafka+Detective.html">Extending Kafka Detective</a></div><ol class="toc">  </ol></li><li><div><a href="Using+Kafka+Detective.html">Using Kafka Detective</a></div><ol class="toc"> <li><div class="current">Environment Pre-Requisites</div></li><li><div><a href="Configuring+Detective.html">Configuring Detective</a></div></li><li><div><a href="Deploying+Detective.html">Deploying Detective</a></div></li> </ol></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>Kafka Detective</span> — Environment Pre-Requisites
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        
+        
+      </body>
+    </html>

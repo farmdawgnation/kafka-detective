@@ -1,0 +1,153 @@
+## Configuring Detective
+
+Kafka Detective has two methods of configuration for most application settings. You can either
+use an application.conf file, which will work best if you're running Detective directly on the
+host, or you can configure using environment variables, which will work best for Docker deployment.
+
+Unfortunately, for metrics configuration options you currently _must_ use environment variables.
+
+### General Application Configuration
+
+General application configuration covers the basic configuration of what content Detective is
+monitoring and how it is monitoring it.
+
+#### Configuring the Docker deployment
+
+When deploying as a Docker container, we recommend using the environment to configure the
+application. The following environment variables are available for you to use to configure
+Detective:
+
+* `MAX_WORKER_COUNT` - The maximum number of workers to use. When detective boots up each partition
+  on your upstream topics will be assigned to workers. The correct value here is determined by the
+  volume on your topics. For high volume topics, this should be equal to the number of partitions
+  you're monitoring.
+* `COMPARISON_THREADS_PER_WORKER` - The number of different comparison threads to use while testing
+  messages.
+* `MONITOR_ID` - Some unique identifier for the monitor.
+* `REFERENCE_SERVER` - The Kafka broker address (or a comma separated list of broker addresses) that
+  the reference data will come from.
+* `REFERENCE_TOPIC` - The topic that the reference data will come from.
+* `REFERENCE_PARTITION` - A comma separated list of partitions to monitor from the topic.
+* `REFERENCE_DESERIALIZER` - The deserializer to use when parsing reference messages.
+* `TEST_SERVER` - The Kafka broker address (or a comma separated list of broker addresses) that
+  the test data will come from.
+* `TEST_TOPIC` - The topic that the test data will come from.
+* `TEST_PARTITION` - A comma separated list of partitions to monitor from the test topic.
+* `TEST_DESERIALIZER` - The deserializer to use when parsing reference messages.
+* `REFERENCE_WINDOW_SIZE` - The number of reference messages to buffer for comparison.
+* `MATCH_FINDER` - The class that will serve to find candidate matches.
+* `MATCH_TESTER` - The class that will test match candidates for matching.
+* `REPORTERS` - The comma separated list of reporter to use.
+
+If you're using one of the Kafka topic reporters, you'll also want to configure these environment
+variables:
+
+* `KAFKA_REPORTER_TOPIC` - The topic to report on
+* `KAFKA_REPORTER_SERVER` - The broker address (or comma separated list of broker addresses) that
+  failures will be reported to.
+
+#### Writing an application.conf
+
+When deploying Detective as a JAR, you'll need to write an `application.conf` file and put it on
+your server. Detective uses [Typesafe Config][tsconfig] for its configuration. You can find more
+information on the different kinds of things that could appear in a config file in their
+documentation.
+
+Below is an example configuration file including information about what each value means:
+
+```
+kafka-detective {
+  # The maximum number of workers to allocate per
+  # monitor
+  max-worker-count-per-monitor = 10
+
+  # The number of threads to use for comparing
+  # messages in a worker
+  comparison-threads-per-worker = 10
+
+  # An array of monitors. You can add multiple
+  # monitors to a single instance of Detective
+  monitors = [
+    {
+      # An identifier for this monitor.
+      # All monitor identifiers must be
+      # unique.
+      identifier = "awesome-topic"
+
+      # Information about the reference
+      # topic.
+      reference-subject = {
+        # Hostname and port of the broker
+        # to connect to
+        server = "localhost:9092"
+
+        # Topic to monitor
+        topic = "awesome-ref-topic"
+
+        # Partitions in the topic to monitor
+        partitions = "1,2,3"
+
+        # Class that can deserialize the
+        # messages
+        deserializer = "me.frmr.kafka.detective.deserializer.ByteArrayDeserializer"
+      }
+
+      # Same configuration as above for
+      # the test topic
+      test-subject = {
+        server = "localhost:9092"
+        topic = "awesome-test-topic"
+        partitions = "1,2,3"
+        deserializer = "me.frmr.kafka.detective.deserializer.ByteArrayDeserializer"
+      }
+
+      # The number of messages from the reference
+      # topic to buffer for comparison
+      reference-window-size = 10000
+
+      # Class that can will find potential matches
+      # within the reference window.
+      match-finder = "me.frmr.kafka.detective.matchfinder.KeyEqualsFinder"
+
+      # Class that will determine if a match is
+      # successful.
+      match-tester = "me.frmr.kafka.detective.matchtester.ValueEqualsTester"
+
+      # Class that will report failures.
+      reporters = "me.frmr.kafka.detective.reporter.KafkaTopicReporter"
+
+      # Special configuration for reporters
+      # that require them.
+      reporter-configs {
+        kafka {
+          topic = "awesome-topic-fails"
+
+          producer {
+            "bootstrap.servers" = "localhost:9092"
+            "acks" = "all"
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+[tsconfig]: https://github.com/typesafehub/config
+
+### Metrics Reporting Configuration
+
+Detective uses Dropwizard Metrics under the hood to report on a number of interesting metrics about
+its operation. Additionally, there's a metrics reporter that you can use to report metrics on how
+your performing overall.
+
+By default, these metrics will all be fed to JMX. However, you can configure the metrics subsystem
+to report to a [Graphite Carbon](https://github.com/graphite-project/carbon) host by providing the
+following environment variables:
+
+https://github.com/graphite-project/carbon
+
+* `GRAPHITE_ENABLED=1`
+* `GRAPHITE_HOST=my.carbon.host`
+* `GRAPHITE_PORT=1234`
+* `GRAPHITE_POLL_SECONDS=` any value you wish for refreshing

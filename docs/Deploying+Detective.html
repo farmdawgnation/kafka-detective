@@ -1,0 +1,92 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>Kafka Detective — Deploying Detective</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Configuring+Detective.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Contents+in+Depth.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <h2 id="Deploying+Detective">Deploying Detective<a href="#Deploying+Detective" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>The Detective Daemon can be deployed as a stand-alone JAR or as a Docker image.
+</p><h3 id="Stand-alone+JAR+Deployment">Stand-alone JAR Deployment<a href="#Stand-alone+JAR+Deployment" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>When deploying Detective as a stand-alone JAR you’ll need to roughly do the following:
+</p><ol><li>Upload the JAR to some known location on the server you’d like to deploy to.
+</li><li>Populate a configuration file on the server. (See below.)
+</li><li>Pick a location to upload extensions to if you have any.
+</li><li>Create an init script or monit script to start the server. (See below.)
+</li></ol><p>Once you’ve done the above you should be in pretty good shape to start running Detective.
+</p><h4 id="Preparing+your+server">Preparing your server<a href="#Preparing+your+server" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><p>To prepare your server, you should pick a few directories for deploying the pieces of Detective.
+Those locations (with our default suggestions) are:
+</p><ul><li>The location where the Detective JAR is stored. We’ll call this <code>DETECTIVE_HOME</code> in this doc.
+(we recommend <code>/opt/kafka-detective</code>)
+</li><li>The location where Detective extensions are stored. We’ll call this <code>LIBS_HOME</code> in this doc.
+(we recoomend <code>opt/kafka-detective/lib</code>)
+</li></ul><h4 id="Generating+the+start+command">Generating the start command<a href="#Generating+the+start+command" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><p>Once Kafka Detective is on your server, you’ll need to correctly craft the command to start it.
+A start script should look something like this with your <code>DETECTIVE_HOME</code> and <code>LIBS_HOME</code> substituted
+in:
+</p><pre><code class="">#!/usr/bin/env bash
+
+exec java -cp DETECTIVE_HOME/*:LIBS_HOME/* me.frmr.kafka.detective.Main &quot;$@&quot;
+</code></pre><h3 id="Docker+image+deployment">Docker image deployment<a href="#Docker+image+deployment" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>Detective also supports deployment using a Docker image. The currently released docker image is:
+</p><pre><code class="">&quot;farmdawgnation/kafka-detective:0.6.0&quot;
+</code></pre><div class="bottom nav end span-16">
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="index.html">Kafka Detective</a></div><ol class="toc"> <li><div><a href="How+Detective+Works.html">How Detective Works</a></div><ol class="toc"> <li><div><a href="High-Level+Overview.html">High-Level Overview</a></div></li> </ol></li><li><div><a href="Extending+Kafka+Detective.html">Extending Kafka Detective</a></div><ol class="toc">  </ol></li><li><div><a href="Using+Kafka+Detective.html">Using Kafka Detective</a></div><ol class="toc"> <li><div><a href="Environment+Pre-Requisites.html">Environment Pre-Requisites</a></div></li><li><div><a href="Configuring+Detective.html">Configuring Detective</a></div></li><li><div class="current">Deploying Detective</div></li> </ol></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>Kafka Detective</span> — Deploying Detective
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        
+        
+      </body>
+    </html>

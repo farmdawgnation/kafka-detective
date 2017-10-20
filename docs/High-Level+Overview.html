@@ -1,0 +1,133 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>Kafka Detective — High-Level Overview</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="How+Detective+Works.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Extending+Kafka+Detective.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <h2 id="High-Level+Overview">High-Level Overview<a href="#High-Level+Overview" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Detective deployments define <strong>monitors</strong> that represent an individual test of two topics when
+compared to each other. Monitors work by keeping an eye on a <strong>reference topic</strong> that represents
+the known-or-believed-to-be-good production implementation and a <strong>test topic</strong> that represents
+some newer implementation that you would like to test against. Each monitor explicitly enumerates
+what partitions it monitors.
+</p><p>Each monitor has some number of <strong>monitor workers</strong>. These workers are responsible for some number
+of partitions from the reference and test topics. The workers will consume messages and perform
+parallelized comparison of messages. Messages ready for comparison by the worker are routed to
+threads in the thread pool by their Kafka key to ensure that no two messages with the same key
+are compared concurrently. This permits us to ensure ordering is correct in the test topic.
+</p><p>As Kafka messages come in on both topics, they are run through a <strong>deserializer</strong> that turns the
+byte arrays provided by Kafka into concrete objects that the later stages of Detective can use.
+These are wrapped in an envelope for the convenience of the later parts of the process.
+</p><p>As messages come into Detective from the reference topic, they are placed into the <strong>reference
+window</strong>: a configurable fixed-size window for the worker to consider when attempting to find
+matching messages from the test topic.
+</p><p>As messages come into Detective from the test topic, they are submitted to the comparison thread
+pool for comparison to reference messages. The process for comparison is:
+</p><ol><li>Determine, based on message offsets, if we believe this message is reasonably present in the
+reference window. If not, wait until the reference topic has consumed enough messages that we
+think this message should exist in the reference window.
+</li><li>Execute the configured <strong>match finder</strong> to determine if there are any messages in the reference
+window that we think <em>should</em> totally match the test message we’re considering.
+</li></ol><ul><li>If we do find such a message, we return it and submit it for further testing.
+</li><li><p>If we do not find such a message, we consider this test message a <strong>key miss</strong> and move on to
+</p><p> the next message. We report key misses to the configured <strong>reporters</strong> for the monitor.
+</p></li><li><p>Additionally, the finder could report that this is a message that <em>should not</em> be tested. If so
+</p><p> this message will be discarded and reported as an <strong>ignored message</strong>, and testing will move on
+ to the next message. We report ignored messages to the <strong>reporters</strong> for the monitor.
+</p></li></ul><ol><li>Execute the configured <strong>match tester</strong> against the test message and the reference message we
+believe should match.
+</li></ol><ul><li><p>If this test passes, we consider this test message a <strong>successful match</strong> and move on to the
+</p><p> next message. We report successful matches to the configured <strong>reporters</strong> for the monitor.
+</p></li><li><p>If this test fails, we consider this test message a <strong>failed match</strong> and move on to the next
+</p><p> message. We report failed matches to the configured <strong>reporters</strong> for the monitor.
+</p></li></ul><p>While doing this process, the monitor worker also ensures that both topics are roughly in sync and
+applies backpressure to the underlying consumers as needed to keep them in sync. In the event that
+backpressure has to be applied consistently for some span of time (5 minutes by default), the
+worker will invoke a <strong>worker reset</strong> and seek to the end of both topics. Any messages queues for
+testing when this happens will be reported as <strong>ignored messages</strong>.
+</p><h3 id="Reporting">Reporting<a href="#Reporting" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>As mentioned above, Detective reports all test results to the configured reporters. Each reporter
+gets to decide how it wants to handle those reports. Below is an overview of how each reporter
+packaged with Detective handles those reports.
+</p><h4 id="Logging+reporter">Logging reporter<a href="#Logging+reporter" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><p>Successful matches and failed matches are reported at the <code>INFO</code> log level. Key misses are
+reported at the <code>TRACE</code> log level. Ignored messages are reported at the <code>DEBUG</code> log level.
+</p><h4 id="Metrics+reporter">Metrics reporter<a href="#Metrics+reporter" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><p>The metrics reporter uses the built in metrics configuration for Detective writ large, and
+requires that the environment variables for reporting to metrics are properly configured. This
+reporter will report all kinds of test results as marks on meters.
+</p><p>Replacing <code>MONITOR_IDENTIFIER</code> with the actual monitor identifier, the paths for these appear in
+JMX as:
+</p><ul><li><code>reporter.MONITOR_IDENTIFIER.successful-match</code>
+</li><li><code>reporter.MONITOR_IDENTIFIER.failed-match</code>
+</li><li><code>reporter.MONITOR_IDENTIFIER.no-match</code>
+</li><li><code>reporter.MONITOR_IDENTIFIER.ignored</code>
+</li></ul><h4 id="Kafka+topic+reporter">Kafka topic reporter<a href="#Kafka+topic+reporter" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><p>This reporter will report results to a Kafka topic. To do so, it will serialize the error message
+and relevant messages as JSON and publish it to some configured Kafka topic.
+</p><blockquote><p>Please note this reporter requires additional configuration to work correctly. See the notes
+on the configuration page.
+</p></blockquote><p>This reporter will <strong>only</strong> report on failed matches or key misses.
+</p><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Extending+Kafka+Detective.html"> Extending Kafka Detective </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="index.html">Kafka Detective</a></div><ol class="toc"> <li><div><a href="How+Detective+Works.html">How Detective Works</a></div><ol class="toc"> <li><div class="current">High-Level Overview</div></li> </ol></li><li><div><a href="Extending+Kafka+Detective.html">Extending Kafka Detective</a></div><ol class="toc">  </ol></li><li><div><a href="Using+Kafka+Detective.html">Using Kafka Detective</a></div><ol class="toc"> <li><div><a href="Environment+Pre-Requisites.html">Environment Pre-Requisites</a></div></li><li><div><a href="Configuring+Detective.html">Configuring Detective</a></div></li><li><div><a href="Deploying+Detective.html">Deploying Detective</a></div></li> </ol></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>Kafka Detective</span> — High-Level Overview
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        
+        
+      </body>
+    </html>

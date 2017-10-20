@@ -1,0 +1,83 @@
+## High-Level Overview
+
+Detective deployments define **monitors** that represent an individual test of two topics when
+compared to each other. Monitors work by keeping an eye on a **reference topic** that represents
+the known-or-believed-to-be-good production implementation and a **test topic** that represents
+some newer implementation that you would like to test against. Each monitor explicitly enumerates
+what partitions it monitors.
+
+Each monitor has some number of **monitor workers**. These workers are responsible for some number
+of partitions from the reference and test topics. The workers will consume messages and perform
+parallelized comparison of messages. Messages ready for comparison by the worker are routed to
+threads in the thread pool by their Kafka key to ensure that no two messages with the same key
+are compared concurrently. This permits us to ensure ordering is correct in the test topic.
+
+As Kafka messages come in on both topics, they are run through a **deserializer** that turns the
+byte arrays provided by Kafka into concrete objects that the later stages of Detective can use.
+These are wrapped in an envelope for the convenience of the later parts of the process.
+
+As messages come into Detective from the reference topic, they are placed into the **reference
+window**: a configurable fixed-size window for the worker to consider when attempting to find
+matching messages from the test topic.
+
+As messages come into Detective from the test topic, they are submitted to the comparison thread
+pool for comparison to reference messages. The process for comparison is:
+
+1. Determine, based on message offsets, if we believe this message is reasonably present in the
+   reference window. If not, wait until the reference topic has consumed enough messages that we
+   think this message should exist in the reference window.
+2. Execute the configured **match finder** to determine if there are any messages in the reference
+   window that we think _should_ totally match the test message we're considering.
+   * If we do find such a message, we return it and submit it for further testing.
+   * If we do not find such a message, we consider this test message a **key miss** and move on to
+     the next message. We report key misses to the configured **reporters** for the monitor.
+   * Additionally, the finder could report that this is a message that _should not_ be tested. If so
+     this message will be discarded and reported as an **ignored message**, and testing will move on
+     to the next message. We report ignored messages to the **reporters** for the monitor.
+3. Execute the configured **match tester** against the test message and the reference message we
+   believe should match.
+   * If this test passes, we consider this test message a **successful match** and move on to the
+     next message. We report successful matches to the configured **reporters** for the monitor.
+   * If this test fails, we consider this test message a **failed match** and move on to the next
+     message. We report failed matches to the configured **reporters** for the monitor.
+
+While doing this process, the monitor worker also ensures that both topics are roughly in sync and
+applies backpressure to the underlying consumers as needed to keep them in sync. In the event that
+backpressure has to be applied consistently for some span of time (5 minutes by default), the
+worker will invoke a **worker reset** and seek to the end of both topics. Any messages queues for
+testing when this happens will be reported as **ignored messages**.
+
+### Reporting
+
+As mentioned above, Detective reports all test results to the configured reporters. Each reporter
+gets to decide how it wants to handle those reports. Below is an overview of how each reporter
+packaged with Detective handles those reports.
+
+#### Logging reporter
+
+Successful matches and failed matches are reported at the `INFO` log level. Key misses are
+reported at the `TRACE` log level. Ignored messages are reported at the `DEBUG` log level.
+
+#### Metrics reporter
+
+The metrics reporter uses the built in metrics configuration for Detective writ large, and
+requires that the environment variables for reporting to metrics are properly configured. This
+reporter will report all kinds of test results as marks on meters.
+
+Replacing `MONITOR_IDENTIFIER` with the actual monitor identifier, the paths for these appear in
+JMX as:
+
+* `reporter.MONITOR_IDENTIFIER.successful-match`
+* `reporter.MONITOR_IDENTIFIER.failed-match`
+* `reporter.MONITOR_IDENTIFIER.no-match`
+* `reporter.MONITOR_IDENTIFIER.ignored`
+
+#### Kafka topic reporter
+
+This reporter will report results to a Kafka topic. To do so, it will serialize the error message
+and relevant messages as JSON and publish it to some configured Kafka topic.
+
+> Please note this reporter requires additional configuration to work correctly. See the notes
+> on the configuration page.
+
+This reporter will **only** report on failed matches or key misses.

@@ -1,0 +1,44 @@
+## Deploying Detective
+
+The Detective Daemon can be deployed as a stand-alone JAR or as a Docker image.
+
+### Stand-alone JAR Deployment
+
+When deploying Detective as a stand-alone JAR you'll need to roughly do the following:
+
+1. Upload the JAR to some known location on the server you'd like to deploy to.
+2. Populate a configuration file on the server. (See below.)
+3. Pick a location to upload extensions to if you have any.
+4. Create an init script or monit script to start the server. (See below.)
+
+Once you've done the above you should be in pretty good shape to start running Detective.
+
+#### Preparing your server
+
+To prepare your server, you should pick a few directories for deploying the pieces of Detective.
+Those locations (with our default suggestions) are:
+
+* The location where the Detective JAR is stored. We'll call this `DETECTIVE_HOME` in this doc.
+  (we recommend `/opt/kafka-detective`)
+* The location where Detective extensions are stored. We'll call this `LIBS_HOME` in this doc.
+  (we recoomend `opt/kafka-detective/lib`)
+
+#### Generating the start command
+
+Once Kafka Detective is on your server, you'll need to correctly craft the command to start it.
+A start script should look something like this with your `DETECTIVE_HOME` and `LIBS_HOME` substituted
+in:
+
+```
+#!/usr/bin/env bash
+
+exec java -cp DETECTIVE_HOME/*:LIBS_HOME/* me.frmr.kafka.detective.Main "\$@"
+```
+
+### Docker image deployment
+
+Detective also supports deployment using a Docker image. The currently released docker image is:
+
+```
+$dockerimage$
+```

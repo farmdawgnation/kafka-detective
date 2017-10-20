@@ -1,0 +1,35 @@
+= Detective Doc Site
+
+This directory contains the sources for the Detective Documentation site. The sources are compiled
+into the `docs` folder using a tool called http://www.foundweekends.org/pamflet/[Pamflet].
+
+Since Pamflet picks up all Markdown files, I made this readme an asciidoc file so that it would be
+ignored by the Pamflet compiler.
+
+== Installing Pamflet
+
+To install pamflet on your computer:
+
+1. Install http://www.foundweekends.org/conscript/setup.html[Conscript].
+2. Invoke `cs foundweekends/pamflet` to install Pamflet.
+
+== Running the docs in watch mode
+
+To run the documentation compiler in watch mode, change your current directory to docs-src and
+invoke:
+
+```
+$ pf .
+```
+
+Pamflet will start in watch mode and refresh itself each time you change the files.
+
+== Compiling the docs
+
+To compile the docs for GitHub pages, change your current directory to docs-src and invoke:
+
+```
+$ pf . ../docs
+```
+
+Then commit and push the changes that result from this command.

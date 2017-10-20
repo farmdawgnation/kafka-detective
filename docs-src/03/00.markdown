@@ -1,0 +1,4 @@
+## Using Kafka Detective
+
+This section walks through deploying and using Kafka Detective in your environment. Each of the
+subsections walk through a different aspect of configuring and deploying Kafka Detective.

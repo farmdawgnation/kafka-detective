@@ -1,0 +1,24 @@
+---
+out: index.html
+---
+
+# Kafka Detective
+
+**Kafka Detective** is an application for doing end-to-end testing against streaming data
+applications. Detective works by comparing the contents of two Kafka topics (potentially on
+different Kafka clusters) and ensuring that the content from the "test topic", the topic that your
+new, candidate version of your code outputs on, has equivalent content in the "reference topic", the
+topic that your known-good production code outputs on.
+
+This document describes how to use Kafka Detective to debug your streaming data applications, how to
+extend Kafka Detective with extensions, and walks through some of the detailed architecture of
+Detective.
+
+In addition to this document, you may find it useful to browse the available ScalaDocs for Detective
+on this site:
+
+* [kafka-detective-api](scaladocs/kafka-detective-api)
+* [kafka-detective-daemon](scaladocs/kafka-detective-daemon)
+
+We'll try our darndest to keep this document up to date as changes come to Detective, but we
+encourage you to open a PR fixing any issues you find along the way.

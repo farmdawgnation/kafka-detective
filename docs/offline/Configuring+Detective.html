@@ -1,0 +1,200 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>Kafka Detective — Configuring Detective</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Environment+Pre-Requisites.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Deploying+Detective.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <h2 id="Configuring+Detective">Configuring Detective<a href="#Configuring+Detective" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Kafka Detective has two methods of configuration for most application settings. You can either
+use an application.conf file, which will work best if you’re running Detective directly on the
+host, or you can configure using environment variables, which will work best for Docker deployment.
+</p><p>Unfortunately, for metrics configuration options you currently <em>must</em> use environment variables.
+</p><h3 id="General+Application+Configuration">General Application Configuration<a href="#General+Application+Configuration" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>General application configuration covers the basic configuration of what content Detective is
+monitoring and how it is monitoring it.
+</p><h4 id="Configuring+the+Docker+deployment">Configuring the Docker deployment<a href="#Configuring+the+Docker+deployment" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><p>When deploying as a Docker container, we recommend using the environment to configure the
+application. The following environment variables are available for you to use to configure
+Detective:
+</p><ul><li><code>MAX_WORKER_COUNT</code> - The maximum number of workers to use. When detective boots up each partition
+on your upstream topics will be assigned to workers. The correct value here is determined by the
+volume on your topics. For high volume topics, this should be equal to the number of partitions
+you’re monitoring.
+</li><li><code>COMPARISON_THREADS_PER_WORKER</code> - The number of different comparison threads to use while testing
+messages.
+</li><li><code>MONITOR_ID</code> - Some unique identifier for the monitor.
+</li><li><code>REFERENCE_SERVER</code> - The Kafka broker address (or a comma separated list of broker addresses) that
+the reference data will come from.
+</li><li><code>REFERENCE_TOPIC</code> - The topic that the reference data will come from.
+</li><li><code>REFERENCE_PARTITION</code> - A comma separated list of partitions to monitor from the topic.
+</li><li><code>REFERENCE_DESERIALIZER</code> - The deserializer to use when parsing reference messages.
+</li><li><code>TEST_SERVER</code> - The Kafka broker address (or a comma separated list of broker addresses) that
+the test data will come from.
+</li><li><code>TEST_TOPIC</code> - The topic that the test data will come from.
+</li><li><code>TEST_PARTITION</code> - A comma separated list of partitions to monitor from the test topic.
+</li><li><code>TEST_DESERIALIZER</code> - The deserializer to use when parsing reference messages.
+</li><li><code>REFERENCE_WINDOW_SIZE</code> - The number of reference messages to buffer for comparison.
+</li><li><code>MATCH_FINDER</code> - The class that will serve to find candidate matches.
+</li><li><code>MATCH_TESTER</code> - The class that will test match candidates for matching.
+</li><li><code>REPORTERS</code> - The comma separated list of reporter to use.
+</li></ul><p>If you’re using one of the Kafka topic reporters, you’ll also want to configure these environment
+variables:
+</p><ul><li><code>KAFKA_REPORTER_TOPIC</code> - The topic to report on
+</li><li><code>KAFKA_REPORTER_SERVER</code> - The broker address (or comma separated list of broker addresses) that
+failures will be reported to.
+</li></ul><h4 id="Writing+an+application.conf">Writing an application.conf<a href="#Writing+an+application.conf" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><p>When deploying Detective as a JAR, you’ll need to write an <code>application.conf</code> file and put it on
+your server. Detective uses <a href="https://github.com/typesafehub/config">Typesafe Config</a> for its configuration. You can find more
+information on the different kinds of things that could appear in a config file in their
+documentation.
+</p><p>Below is an example configuration file including information about what each value means:
+</p><pre><code class="">kafka-detective {
+  # The maximum number of workers to allocate per
+  # monitor
+  max-worker-count-per-monitor = 10
+
+  # The number of threads to use for comparing
+  # messages in a worker
+  comparison-threads-per-worker = 10
+
+  # An array of monitors. You can add multiple
+  # monitors to a single instance of Detective
+  monitors = [
+    {
+      # An identifier for this monitor.
+      # All monitor identifiers must be
+      # unique.
+      identifier = &quot;awesome-topic&quot;
+
+      # Information about the reference
+      # topic.
+      reference-subject = {
+        # Hostname and port of the broker
+        # to connect to
+        server = &quot;localhost:9092&quot;
+
+        # Topic to monitor
+        topic = &quot;awesome-ref-topic&quot;
+
+        # Partitions in the topic to monitor
+        partitions = &quot;1,2,3&quot;
+
+        # Class that can deserialize the
+        # messages
+        deserializer = &quot;me.frmr.kafka.detective.deserializer.ByteArrayDeserializer&quot;
+      }
+
+      # Same configuration as above for
+      # the test topic
+      test-subject = {
+        server = &quot;localhost:9092&quot;
+        topic = &quot;awesome-test-topic&quot;
+        partitions = &quot;1,2,3&quot;
+        deserializer = &quot;me.frmr.kafka.detective.deserializer.ByteArrayDeserializer&quot;
+      }
+
+      # The number of messages from the reference
+      # topic to buffer for comparison
+      reference-window-size = 10000
+
+      # Class that can will find potential matches
+      # within the reference window.
+      match-finder = &quot;me.frmr.kafka.detective.matchfinder.KeyEqualsFinder&quot;
+
+      # Class that will determine if a match is
+      # successful.
+      match-tester = &quot;me.frmr.kafka.detective.matchtester.ValueEqualsTester&quot;
+
+      # Class that will report failures.
+      reporters = &quot;me.frmr.kafka.detective.reporter.KafkaTopicReporter&quot;
+
+      # Special configuration for reporters
+      # that require them.
+      reporter-configs {
+        kafka {
+          topic = &quot;awesome-topic-fails&quot;
+
+          producer {
+            &quot;bootstrap.servers&quot; = &quot;localhost:9092&quot;
+            &quot;acks&quot; = &quot;all&quot;
+          }
+        }
+      }
+    }
+  ]
+}
+</code></pre><h3 id="Metrics+Reporting+Configuration">Metrics Reporting Configuration<a href="#Metrics+Reporting+Configuration" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>Detective uses Dropwizard Metrics under the hood to report on a number of interesting metrics about
+its operation. Additionally, there’s a metrics reporter that you can use to report metrics on how
+your performing overall.
+</p><p>By default, these metrics will all be fed to JMX. However, you can configure the metrics subsystem
+to report to a <a href="https://github.com/graphite-project/carbon">Graphite Carbon</a> host by providing the
+following environment variables:
+</p><p>https://github.com/graphite-project/carbon
+</p><ul><li><code>GRAPHITE_ENABLED=1</code>
+</li><li><code>GRAPHITE_HOST=my.carbon.host</code>
+</li><li><code>GRAPHITE_PORT=1234</code>
+</li><li><code>GRAPHITE_POLL_SECONDS=</code> any value you wish for refreshing
+</li></ul><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Deploying+Detective.html"> Deploying Detective </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="index.html">Kafka Detective</a></div><ol class="toc"> <li><div><a href="How+Detective+Works.html">How Detective Works</a></div><ol class="toc"> <li><div><a href="High-Level+Overview.html">High-Level Overview</a></div></li> </ol></li><li><div><a href="Extending+Kafka+Detective.html">Extending Kafka Detective</a></div><ol class="toc">  </ol></li><li><div><a href="Using+Kafka+Detective.html">Using Kafka Detective</a></div><ol class="toc"> <li><div><a href="Environment+Pre-Requisites.html">Environment Pre-Requisites</a></div></li><li><div class="current">Configuring Detective</div></li><li><div><a href="Deploying+Detective.html">Deploying Detective</a></div></li> </ol></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>Kafka Detective</span> — Configuring Detective
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        
+        
+      </body>
+    </html>
