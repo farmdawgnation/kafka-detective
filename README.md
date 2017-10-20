@@ -77,3 +77,19 @@ by simply configuring them for your monitors.
 |topic         |String     |Y   |The topic to monitor.                                                              |
 |partitions    |String     |Y   |Comma-delimited list of partitions to monitor.                                     |
 |deserializer  |String     |Y   |Name of a class conforming to `MonitorDeserializer`                                |
+
+## Building
+
+To build this project you'll need to use:
+
+* JDK 8
+* [sbt](http://www.scala-sbt.org/)
+
+Once both are installed and set up, you should be able to spin up `sbt` to get things up and
+running. _Do be advised sbt doesn't work with JDK 9._
+
+## About
+
+This software was developed at [MailChimp](https://mailchimp.com/), who generously allowed me to
+open source it under the Apache 2 License. I also help maintain several other open source projects,
+including [the Lift Framework](https://liftweb.net) and [Dispatch](https://dispatchhttp.org/Dispatch.html).
