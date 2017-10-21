@@ -28,3 +28,5 @@ scalacOptions += "-deprecation"
 Defaults.itSettings
 
 parallelExecution in IntegrationTest := false
+
+assemblyJarName in assembly := "kafka-detective.jar"
