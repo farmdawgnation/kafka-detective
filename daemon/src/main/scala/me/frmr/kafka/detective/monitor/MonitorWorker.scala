@@ -186,7 +186,7 @@ class MonitorWorker(
 
     new CallbackKafkaConsumer[Array[Byte], Array[Byte]](
       monitor.testSubject.topic,
-      monitor.referenceSubject.onlyPartitions,
+      monitor.testSubject.onlyPartitions,
       properties,
       backpressureFn = Some(shouldTestConsumerBackpressure _)
     )
