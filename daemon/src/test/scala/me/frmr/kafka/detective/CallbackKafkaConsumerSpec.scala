@@ -86,13 +86,17 @@ class CallbackKafkaConsumerSpec extends FlatSpec with Matchers with Eventually {
     callbackConsumer.start()
 
     eventually {
-      callbackConsumer.getPositionAheadOfStart should be > 0L
+      withClue("Didn't consume message") {
+        callbackConsumer.getPositionAheadOfStart should be > 0L
+      }
     }
 
     callbackConsumer.reset()
 
     eventually {
-      sawReset shouldBe true
+      withClue("Didn't see reset flag flip") {
+        sawReset shouldBe true
+      }
       sawMessage shouldBe Some(("abc", "def"))
       callbackConsumer.getPositionAheadOfStart shouldBe 0L
     }
@@ -107,8 +111,12 @@ class CallbackKafkaConsumerSpec extends FlatSpec with Matchers with Eventually {
     callbackConsumer.reset()
 
     eventually {
-      sawReset shouldBe true
-      callbackConsumer.isBackpressuring shouldBe true
+      withClue("Didn't see reset flag flip") {
+        sawReset shouldBe true
+      }
+      withClue("Didn't see backpressure flag flip") {
+        callbackConsumer.isBackpressuring shouldBe true
+      }
     }
   }
 
