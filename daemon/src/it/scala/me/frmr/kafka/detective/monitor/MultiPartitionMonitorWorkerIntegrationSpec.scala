@@ -116,8 +116,7 @@ class MultiPartitionMonitorWorkerIntegrationSpec extends FlatSpec with Matchers 
   }
 
   val kafkaHost = sys.env.get("IT_KAFKA_HOST").getOrElse("localhost:9092")
-  val zkAddress = sys.env.get("IT_ZK_ADDR").getOrElse("localhost:2181/kafka")
-  val kafkaAdmin = new KafkaAdmin(zkAddress)
+  val kafkaAdmin = new KafkaAdmin(kafkaHost)
 
   def withFixtures(testCode: ((String,String,Option[Int])=>Unit, (String,String,Option[Int])=>Unit, MonitorWorker, CountingReporter)=>Any) = {
     val countingReporter = new CountingReporter("worker-integration-tests", Map.empty.asJava)

@@ -9,13 +9,9 @@ scala:
 jdk:
   - oraclejdk8
 
-before_script:
-  - docker-compose up -d
-
 script:
   - sbt compile
   - sbt test
-  - sbt daemon/it:test
   - sbt daemon/assembly
   - docker build -t farmdawgnation/kafka-detective:$VERSION .
 
@@ -25,5 +21,6 @@ after_success:
     docker push farmdawgnation/kafka-detective:$VERSION;
     fi
 
-after_script:
-  - docker-compose down
+cache:
+  - $HOME/.ivy2
+  - $HOME/.sbt

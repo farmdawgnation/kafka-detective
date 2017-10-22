@@ -1,3 +1,3 @@
 object KafkaVersion {
-  val version = "0.10.2.0"
+  val version = "0.11.0.1"
 }

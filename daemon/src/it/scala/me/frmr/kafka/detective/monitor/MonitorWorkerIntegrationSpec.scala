@@ -22,6 +22,7 @@ class MonitorWorkerIntegrationSpec extends FlatSpec with Matchers with Eventuall
     produceSuccesses(10, produceRef, produceTest)
     produceFailures(10, produceRef, produceTest)
     produceMisses(10, produceRef, produceTest)
+    Thread.sleep(100)
 
     eventually {
       withClue("successful counter mismatch") { reporter.successfulCounter.get() shouldBe 10 }
@@ -32,7 +33,7 @@ class MonitorWorkerIntegrationSpec extends FlatSpec with Matchers with Eventuall
 
   it should "wait for more reference messages if a test message is from the future" in withFixtures { (produceRef, produceTest, worker, reporter) =>
     produceSingleSide(20, produceTest)
-    Thread.sleep(10)
+    Thread.sleep(100)
 
     withClue("successful counter mismatch") { reporter.successfulCounter.get() shouldBe 0 }
     withClue("failed counter mismatch") { reporter.failedCounter.get() shouldBe 0 }
@@ -117,8 +118,7 @@ class MonitorWorkerIntegrationSpec extends FlatSpec with Matchers with Eventuall
   }
 
   val kafkaHost = sys.env.get("IT_KAFKA_HOST").getOrElse("localhost:9092")
-  val zkAddress = sys.env.get("IT_ZK_ADDR").getOrElse("localhost:2181/kafka")
-  val kafkaAdmin = new KafkaAdmin(zkAddress)
+  val kafkaAdmin = new KafkaAdmin(kafkaHost)
 
   def withFixtures(testCode: ((String,String)=>Unit, (String,String)=>Unit, MonitorWorker, CountingReporter)=>Any) = {
     val countingReporter = new CountingReporter("worker-integration-tests", Map.empty.asJava)
