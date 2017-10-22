@@ -6,10 +6,8 @@ scalaVersion := "2.12.4"
 
 version := Version.version
 
-val kafkaVersion = "0.10.2.0"
-
 libraryDependencies ++= Seq(
-  "org.apache.kafka"           %  "kafka-clients"   % kafkaVersion,
+  "org.apache.kafka"           %  "kafka-clients"   % KafkaVersion.version,
   "com.typesafe"               %  "config"          % "1.3.1",
   "com.typesafe.scala-logging" %% "scala-logging"   % "3.5.0",
   "ch.qos.logback"             %  "logback-classic" % "1.2.2",
