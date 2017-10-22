@@ -117,8 +117,7 @@ class MonitorWorkerIntegrationSpec extends FlatSpec with Matchers with Eventuall
   }
 
   val kafkaHost = sys.env.get("IT_KAFKA_HOST").getOrElse("localhost:9092")
-  val zkAddress = sys.env.get("IT_ZK_ADDR").getOrElse("localhost:2181/kafka")
-  val kafkaAdmin = new KafkaAdmin(zkAddress)
+  val kafkaAdmin = new KafkaAdmin(kafkaHost)
 
   def withFixtures(testCode: ((String,String)=>Unit, (String,String)=>Unit, MonitorWorker, CountingReporter)=>Any) = {
     val countingReporter = new CountingReporter("worker-integration-tests", Map.empty.asJava)
