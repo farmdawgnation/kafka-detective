@@ -5,6 +5,7 @@ services:
 language: scala
 scala:
   - 2.12.4
+sbt_args: -J-Xms2G -J-Xmx2G -J-XX:MaxMetaspaceSize=2G
 
 jdk:
   - oraclejdk8
