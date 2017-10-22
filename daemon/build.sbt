@@ -2,7 +2,7 @@ name := "detective-daemon"
 
 organization := "me.frmr.kafka"
 
-scalaVersion := "2.12.2"
+scalaVersion := "2.12.4"
 
 version := Version.version
 
