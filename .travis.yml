@@ -27,3 +27,7 @@ after_success:
 
 after_script:
   - docker-compose down
+
+cache:
+  - $HOME/.ivy2
+  - $HOME/.sbt
