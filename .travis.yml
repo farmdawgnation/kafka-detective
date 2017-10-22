@@ -1,5 +1,15 @@
+sudo: required
+services:
+  - docker
+
 language: scala
 scala:
   - 2.12.4
+
 jdk:
   - oraclejdk8
+
+script:
+  - sbt test
+  - sbt daemon/assembly
+  - docker build -t farmdawgnation/kafka-detective:$VERSION
