@@ -25,3 +25,7 @@ after_success:
 cache:
   - $HOME/.ivy2
   - $HOME/.sbt
+
+branches:
+  only:
+    - master
