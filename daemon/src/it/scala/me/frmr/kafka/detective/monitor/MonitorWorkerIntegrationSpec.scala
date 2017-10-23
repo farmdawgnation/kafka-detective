@@ -126,8 +126,8 @@ class MonitorWorkerIntegrationSpec extends FlatSpec with Matchers with Eventuall
     val referenceTopicName = Random.alphanumeric.take(16).mkString
     val testTopicName = Random.alphanumeric.take(16).mkString
 
-    kafkaAdmin.createTopic(referenceTopicName, 1)
-    kafkaAdmin.createTopic(testTopicName, 1)
+    kafkaAdmin.createTopic(referenceTopicName, 2)
+    kafkaAdmin.createTopic(testTopicName, 2)
 
     val referenceSubject = MonitorSubject(
       kafkaHost,
@@ -139,7 +139,7 @@ class MonitorWorkerIntegrationSpec extends FlatSpec with Matchers with Eventuall
     val testSubject = MonitorSubject(
       kafkaHost,
       testTopicName,
-      Seq(0),
+      Seq(1),
       () => new StringDeserializer
     )
 
@@ -170,12 +170,12 @@ class MonitorWorkerIntegrationSpec extends FlatSpec with Matchers with Eventuall
     val producer = new KafkaProducer[String, String](props)
 
     def produceReferenceMessage(key: String, value: String): Unit = {
-      val record = new ProducerRecord[String, String](referenceTopicName, key, value)
+      val record = new ProducerRecord[String, String](referenceTopicName, 0, key, value)
       producer.send(record)
     }
 
     def produceTestMessage(key: String, value: String): Unit = {
-      val record = new ProducerRecord[String, String](testTopicName, key, value)
+      val record = new ProducerRecord[String, String](testTopicName, 1, key, value)
       producer.send(record)
     }
 
