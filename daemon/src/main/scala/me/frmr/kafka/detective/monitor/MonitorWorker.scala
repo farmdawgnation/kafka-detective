@@ -56,6 +56,8 @@ class MonitorWorker(
   val monitorMatchTester = monitor.matchTester()
   val monitorReporters = monitor.reporters()
 
+  val zippedPartitions = monitor.referenceSubject.onlyPartitions.zip(monitor.testSubject.onlyPartitions)
+
   val executor: KeyAwareExecutor = {
     val workQueue: BlockingQueue[Runnable] = new LinkedBlockingQueue[Runnable]()
     val threadPrefix = s"${monitor.identifier}-worker-$workerNumber-comparison-thread"
@@ -141,9 +143,9 @@ class MonitorWorker(
   var lastHealthyReferenceConsumerTime: Long = System.currentTimeMillis()
 
   def shouldReferenceConsumerBackpressure(): Boolean = {
-    val partitions = monitor.referenceSubject.onlyPartitions
-    val maxDeltaBetweenConsumerPositions = partitions.map({ partition =>
-      referenceConsumer.getPositionAheadOfStartByPartition(partition) - testConsumer.getPositionAheadOfStartByPartition(partition)
+    val maxDeltaBetweenConsumerPositions = zippedPartitions.map({
+      case (refPartition, testPartition) =>
+        referenceConsumer.getPositionAheadOfStartByPartition(refPartition) - testConsumer.getPositionAheadOfStartByPartition(testPartition)
     }).max
 
     val shouldBackpressure = maxDeltaBetweenConsumerPositions > backpressureCeiling
@@ -199,18 +201,22 @@ class MonitorWorker(
     try {
       var loopCount: Int = 0
       val currentRecordPositionAheadOfStart = testConsumer.getOffsetDifferenceFromStart(deserialized.messagePartition, deserialized.messageOffset)
+      val testPartition = deserialized.messagePartition
+      val matchingReferencePartition = zippedPartitions.find(_._2 == testPartition).map(_._1).getOrElse {
+        throw new RuntimeException(s"Could not find a matching reference partition for $testPartition")
+      }
 
       // The test subject is possibly within the reference window if the current reference position
       // minus the refernece window size is less than or equal to the current record position
       // ahead of start
       def testSubjectAfterFirstReferenceMessage = {
-        (referenceConsumer.getPositionAheadOfStartByPartition(deserialized.messagePartition) - monitor.referenceWindowSize) <= currentRecordPositionAheadOfStart
+        (referenceConsumer.getPositionAheadOfStartByPartition(matchingReferencePartition) - monitor.referenceWindowSize) <= currentRecordPositionAheadOfStart
       }
 
       // The test subject is ahead of the end of the reference window if the current record position
       // ahead of start is larger than the reference consumer's position ahead of start
       def testSubjectAfterLastReferenceMessage = {
-        currentRecordPositionAheadOfStart >= referenceConsumer.getPositionAheadOfStartByPartition(deserialized.messagePartition)
+        currentRecordPositionAheadOfStart >= referenceConsumer.getPositionAheadOfStartByPartition(matchingReferencePartition)
       }
 
       // If the test subject occurs after the start of the reference window _and_ after the
