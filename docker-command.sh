@@ -2,4 +2,4 @@
 
 export JAVA_OPTS=$JAVA_OPTS
 
-exec java -cp *:lib/* $JAVA_OPTS com.mailchimp.kafka.detective.Main "$@"
+exec java -cp *:lib/* $JAVA_OPTS me.frmr.kafka.detective.Main "$@"

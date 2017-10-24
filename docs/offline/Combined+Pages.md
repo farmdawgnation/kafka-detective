@@ -287,7 +287,7 @@ exec java -cp DETECTIVE_HOME/*:LIBS_HOME/* me.frmr.kafka.detective.Main "$@"
 Detective also supports deployment using a Docker image. The currently released docker image is:
 
 ```
-farmdawgnation/kafka-detective:0.7.0
+farmdawgnation/kafka-detective:0.7.1
 ```
 
 ## Extending Kafka Detective
@@ -301,17 +301,22 @@ To get started, you'll need to pull in `detective-api` as a provided dependency 
 You can write extensions in Scala 2.12 or in Java. Below are code snippets for adding `detective-api`
 to various build systems.
 
+> As of the time of this writing, detective-api isn't yet available on Maven Central. I'm working
+  on it. Brought the wrong computer for Maven publishing with me to All Things Open. In the
+  meantime, you can clone the repo, install sbt, and run "sbt api/publishLocal" to make it
+  available in your local ivy cache.
+
 #### SBT
 
 ```
-libraryDependencies += "me.frmr.kafka" %% "detective-api" %% "0.7.0" % "provided"
+libraryDependencies += "me.frmr.kafka" %% "detective-api" %% "0.7.1" % "provided"
 ```
 
 #### Gradle
 
 ```
 dependencies {
-  compileOnly 'me.frmr.kafka:detective-api:0.7.0'
+  compileOnly 'me.frmr.kafka:detective-api:0.7.1'
 }
 ```
 
@@ -321,7 +326,7 @@ dependencies {
 <dependency>
   <groupId>me.frmr.kafka</groupId>
   <artifactId>detective-api</artifactId>
-  <version>0.7.0</version>
+  <version>0.7.1</version>
   <scope>provided</scope>
 </dependency>
 ```
@@ -354,16 +359,27 @@ Once you've done this, you'll want to deploy this JAR into Detective's classpath
 to do this with the Docker image below. You will need to adjust this technique if you've deployed
 Detective differently.
 
-### Deploying via the Docker Image
+### Extend via a volume mount
 
-> This documentation assumes working knowledge of building Docker images.
+The easiest possibility for deploying your custom extensions to Detective is to simply volume
+mount them into the Kafka Detective container. Simply execute the following at your shell:
 
-To deploy your custom code, we're going to make a variant of the Detective docker image that
+```
+docker run -v /path/to/file.jar:/opt/kafka-detective/lib/file.jar farmdawgnation/kafka-detective:0.7.1
+```
+
+Detective scans all JARs found in the lib folder for classes, so simply making it available to
+the default Docker image in this way is sufficient to get your custom filters and testers available
+to Detective.
+
+### Extend via a new Docker Image
+
+One way to deploy your code is by making a variant of the Detective docker image that
 adds your JAR file to the `lib` folder, where Detective looks for classes. That Docker image
 can be defined with a Dockerfile as simple as:
 
 ```
-FROM farmdawgnation/kafka-detective:0.7.0
+FROM farmdawgnation/kafka-detective:0.7.1
 
 ADD /path/to/your/jar/file.jar /opt/kafka-detective/lib/file.jar
 ```
