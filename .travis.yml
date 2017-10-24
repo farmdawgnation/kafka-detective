@@ -23,8 +23,9 @@ after_success:
     fi
 
 cache:
-  - $HOME/.ivy2
-  - $HOME/.sbt
+  directories:
+    - $HOME/.ivy2
+    - $HOME/.sbt
 
 branches:
   only:
