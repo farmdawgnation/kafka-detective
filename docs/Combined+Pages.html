@@ -246,10 +246,7 @@ are available in the <code>detective-api</code> package in Maven Central.
 </p><h3 id="Getting+detective-api">Getting detective-api<a href="#Getting+detective-api" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>To get started, you’ll need to pull in <code>detective-api</code> as a provided dependency for your project.
 You can write extensions in Scala 2.12 or in Java. Below are code snippets for adding <code>detective-api</code>
 to various build systems.
-</p><blockquote><p>As of the time of this writing, detective-api isn’t yet available on Maven Central. I’m working
-  on it. Brought the wrong computer for Maven publishing with me to All Things Open. In the
-  meantime, you can clone the repo, install sbt, and run “sbt api/publishLocal” to make it
-  available in your local ivy cache.
+</p><blockquote><p>As of the time of this writing, detective-api isn’t yet available on Maven Central. You can download the JAR from the <a href="https://github.com/farmdawgnation/kafka-detective/releases/tag/0.7.1">release notes</a>.
 </p></blockquote><h4 id="SBT">SBT<a href="#SBT" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="">libraryDependencies += &quot;me.frmr.kafka&quot; %% &quot;detective-api&quot; %% &quot;0.7.1&quot; % &quot;provided&quot;
 </code></pre><h4 id="Gradle">Gradle<a href="#Gradle" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="">dependencies {
   compileOnly 'me.frmr.kafka:detective-api:0.7.1'
