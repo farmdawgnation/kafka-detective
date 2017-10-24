@@ -15,6 +15,10 @@ Detective.
 We'll try our darndest to keep this document up to date as changes come to Detective, but we
 encourage you to open a PR fixing any issues you find along the way.
 
+## Latest Release
+
+The latest release of Kafka Detctive is **[0.7.1](https://github.com/farmdawgnation/kafka-detective/releases/tag/0.7.1)**.
+
 ## Using Kafka Detective
 
 This section walks through deploying and using Kafka Detective in your environment. Each of the
