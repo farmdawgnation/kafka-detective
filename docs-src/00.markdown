@@ -21,3 +21,6 @@ encourage you to open a PR fixing any issues you find along the way.
 ## Latest Release
 
 The latest release of Kafka Detctive is **[$detectiveversion$]($releasenotes$)**.
+
+The scaladocs for the current release of the detective-api package, which is used for building
+custom functionality that plugs into Detective, can be found [here]($apidocs$).

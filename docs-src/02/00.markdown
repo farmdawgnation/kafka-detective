@@ -41,7 +41,7 @@ dependencies {
 Once you've got your project defined, you can defined implementations for the interfaces provided
 by the `me.frmr.kafka.detective.api` package.
 
-Scaladocs for the API can be found [here](/scaladocs/detective-api).
+Scaladocs for the API can be found [here]($apidocs$).
 
 Specifically, those interfaces are:
 

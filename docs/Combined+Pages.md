@@ -19,6 +19,9 @@ encourage you to open a PR fixing any issues you find along the way.
 
 The latest release of Kafka Detctive is **[0.7.1](https://github.com/farmdawgnation/kafka-detective/releases/tag/0.7.1)**.
 
+The scaladocs for the current release of the detective-api package, which is used for building
+custom functionality that plugs into Detective, can be found [here](/scaladocs/detective-api/0.7.1).
+
 ## Using Kafka Detective
 
 This section walks through deploying and using Kafka Detective in your environment. Each of the
@@ -337,7 +340,7 @@ dependencies {
 Once you've got your project defined, you can defined implementations for the interfaces provided
 by the `me.frmr.kafka.detective.api` package.
 
-Scaladocs for the API can be found [here](/scaladocs/detective-api).
+Scaladocs for the API can be found [here](/scaladocs/detective-api/0.7.1).
 
 Specifically, those interfaces are:
 
