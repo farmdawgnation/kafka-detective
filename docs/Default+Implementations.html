@@ -1,0 +1,94 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>Kafka Detective — Default Implementations</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Configuring+Detective.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Deploying+Detective.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <h2 id="Default+Implementations">Default Implementations<a href="#Default+Implementations" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Kafka Detective provides a few helpful, default implementations that can be used without
+doing any custom coding of your own. Each section tells you the environment variable or config
+parameter that lets you use these default implemenations.
+</p><h3 id="MatchFinder%3A+KeyEqualsFinder">MatchFinder: KeyEqualsFinder<a href="#MatchFinder%3A+KeyEqualsFinder" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><blockquote><p>MATCH_FINDER=“me.frmr.kafka.detective.matchfinder.KeyEqualsFinder”
+</p></blockquote><p>Determines possible matches based on the equality of the key. Attempts to account for duplicate
+keys by keeping track of the offset of the last probable match for a provided key. This class is
+provided as a part of detective-api so that you can compose on top of it for custom functionality.
+</p><h3 id="MatchTester%3A+ValueEqualsTester">MatchTester: ValueEqualsTester<a href="#MatchTester%3A+ValueEqualsTester" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><blockquote><p>MATCH_TESTER=“me.frmr.kafka.detective.matchtester.ValueEqualsTester”
+</p></blockquote><p>Does a simple comparison and determines if the value of the two messages are equal. Checks for
+byte arrays and uses an appropriate array equality checker if found. If not, falls back to
+the <code>equals</code> method.
+</p><h3 id="Deserializer%3A+ByteArrayDeserializer">Deserializer: ByteArrayDeserializer<a href="#Deserializer%3A+ByteArrayDeserializer" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><blockquote><p>REFERENCE_DESERIALIZER=“me.frmr.kafka.detective.ByteArrayDeserializer”
+</p></blockquote><blockquote><p>TEST_DESERIALIZER=“me.frmr.kafka.detective.ByteArrayDeserializer”
+</p></blockquote><p>Deserializes key and value as byte arrays.
+</p><h3 id="Deserializer%3A+StringDeserializer">Deserializer: StringDeserializer<a href="#Deserializer%3A+StringDeserializer" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><blockquote><p>REFERENCE_DESERIALIZER=“me.frmr.kafka.detective.StringDeserializer”
+</p></blockquote><blockquote><p>TEST_DESERIALIZER=“me.frmr.kafka.detective.StringDeserializer”
+</p></blockquote><p>Deserializes key and value as strings.
+</p><h3 id="Deserializer%3A+StringKeyByteArrayValueDeserializer">Deserializer: StringKeyByteArrayValueDeserializer<a href="#Deserializer%3A+StringKeyByteArrayValueDeserializer" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><blockquote><p>REFERENCE_DESERIALIZER=“me.frmr.kafka.detective.StringKeyByteArrayValueDeserializer”
+</p></blockquote><blockquote><p>TEST_DESERIALIZER=“me.frmr.kafka.detective.StringKeyByteArrayValueDeserializer”
+</p></blockquote><p>Deserializes key as string and value as byte array.
+</p><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Deploying+Detective.html"> Deploying Detective </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="index.html">Kafka Detective</a></div><ol class="toc"> <li><div><a href="Using+Kafka+Detective.html">Using Kafka Detective</a></div><ol class="toc"> <li><div><a href="Environment+Pre-Requisites.html">Environment Pre-Requisites</a></div></li><li><div><a href="Configuring+Detective.html">Configuring Detective</a></div><ol class="toc"> <li><div class="current">Default Implementations</div></li> </ol></li><li><div><a href="Deploying+Detective.html">Deploying Detective</a></div></li> </ol></li><li><div><a href="Extending+Kafka+Detective.html">Extending Kafka Detective</a></div><ol class="toc">  </ol></li><li><div><a href="Architecture+Overview.html">Architecture Overview</a></div><ol class="toc">  </ol></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>Kafka Detective</span> — Default Implementations
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/farmdawgnation/kafka-detective" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        
+      </body>
+    </html>

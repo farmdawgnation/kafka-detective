@@ -32,27 +32,72 @@
         
       </head>
       <body class="color_scheme-redmond">
-        <a class="page prev nav" href="High-Level+Overview.html">
+        <a class="page prev nav" href="Deploying+Detective.html">
             <span class="space">&nbsp;</span>
             <span class="flip arrow">❧</span>
-          </a><a class="page next nav" href="Using+Kafka+Detective.html">
+          </a><a class="page next nav" href="Architecture+Overview.html">
             <span class="space">&nbsp;</span>
             <span class="arrow">❧</span>
           </a>
         <div class="container contentswrapper">
           <div class="span-16 prepend-1 append-1 contents">
-            <h2 id="Extending+Kafka+Detective">Extending Kafka Detective<a href="#Extending+Kafka+Detective" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>TODO
+            <h2 id="Extending+Kafka+Detective">Extending Kafka Detective<a href="#Extending+Kafka+Detective" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Kafka Detective provides interfaces that allow you to extend its behavior. Those interfaces
+are available in the <code>detective-api</code> package in Maven Central.
+</p><h3 id="Getting+detective-api">Getting detective-api<a href="#Getting+detective-api" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>To get started, you’ll need to pull in <code>detective-api</code> as a provided dependency for your project.
+You can write extensions in Scala 2.12 or in Java. Below are code snippets for adding <code>detective-api</code>
+to various build systems.
+</p><h4 id="SBT">SBT<a href="#SBT" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="">libraryDependencies += &quot;me.frmr.kafka&quot; %% &quot;detective-api&quot; %% &quot;0.7.0&quot; % &quot;provided&quot;
+</code></pre><h4 id="Gradle">Gradle<a href="#Gradle" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="">dependencies {
+  compileOnly 'me.frmr.kafka:detective-api:0.7.0'
+}
+</code></pre><h4 id="Maven">Maven<a href="#Maven" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="">&lt;dependency&gt;
+  &lt;groupId&gt;me.frmr.kafka&lt;/groupId&gt;
+  &lt;artifactId&gt;detective-api&lt;/artifactId&gt;
+  &lt;version&gt;0.7.0&lt;/version&gt;
+  &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre><h3 id="Using+detective-api">Using detective-api<a href="#Using+detective-api" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>Once you’ve got your project defined, you can defined implementations for the interfaces provided
+by the <code>me.frmr.kafka.detective.api</code> package.
+</p><p>Scaladocs for the API can be found <a href="/scaladocs/detective-api">here</a>.
+</p><p>Specifically, those interfaces are:
+</p><ul><li><strong>MonitorDeserializer</strong> — Provides a custom deserializer for incoming messages. A different
+deserializer can be defined for the test and reference side to accommodate for changes in
+serialization format.
+</li><li><strong>MonitorMatchFinder</strong> - Provides a custom heuristic for determining if a message should match
+any possible messages from a reference window.
+</li><li><strong>MonitorMatchTester</strong> - Provides a custom heuristic for testing the pair produced by the
+configured MonitorMatchFinder.
+</li><li><strong>MonitorReporter</strong> - Reports matching results to an external system.
+</li><li><strong>MonitorReporterTransformer</strong> - Transforms messages before sending them to the reporting
+system. This could be used, for example, to transform the messages to JSON format.
+</li></ul><p>In your project you will create some custom implementation of one or more of the above interfaces.
+Then, when you’re ready you’ll need to use your build tool’s packaging task to create a JAR of
+the compiled classes.
+</p><p>Once you’ve done this, you’ll want to deploy this JAR into Detective’s classpath. We outline how
+to do this with the Docker image below. You will need to adjust this technique if you’ve deployed
+Detective differently.
+</p><h3 id="Deploying+via+the+Docker+Image">Deploying via the Docker Image<a href="#Deploying+via+the+Docker+Image" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><blockquote><p>This documentation assumes working knowledge of building Docker images.
+</p></blockquote><p>To deploy your custom code, we’re going to make a variant of the Detective docker image that
+adds your JAR file to the <code>lib</code> folder, where Detective looks for classes. That Docker image
+can be defined with a Dockerfile as simple as:
+</p><pre><code class="">FROM farmdawgnation/kafka-detective:0.7.0
+
+ADD /path/to/your/jar/file.jar /opt/kafka-detective/lib/file.jar
+</code></pre><p>You’ll then build and tag that image and push it somewhere your server can access it. Then,
+all you need to do is change the appropriate config setting to use your class instead of the
+default. For example, if you had provided a custom match finder, you might change the
+<code>MATCH_FINDER</code> environment variable before running the image.
 </p><div class="bottom nav span-16">
                         <em>Next Page</em>
                         <span class="arrow">❧</span>
-                        <a href="Using+Kafka+Detective.html"> Using Kafka Detective </a>                        
+                        <a href="Architecture+Overview.html"> Architecture Overview </a>                        
                         
                       </div><div class="tocwrapper show">
       <a class="tochead nav" style="display: none" href="#toc">❦</a>
       <a name="toc"></a>
       <h4 class="toctitle">Contents</h4>
       <div class="tocbody">
-      <div><a href="index.html">Kafka Detective</a></div><ol class="toc"> <li><div><a href="How+Detective+Works.html">How Detective Works</a></div><ol class="toc"> <li><div><a href="High-Level+Overview.html">High-Level Overview</a></div></li> </ol></li><li><div class="current">Extending Kafka Detective</div><ol class="toc">  </ol></li><li><div><a href="Using+Kafka+Detective.html">Using Kafka Detective</a></div><ol class="toc"> <li><div><a href="Environment+Pre-Requisites.html">Environment Pre-Requisites</a></div></li><li><div><a href="Configuring+Detective.html">Configuring Detective</a></div></li><li><div><a href="Deploying+Detective.html">Deploying Detective</a></div></li> </ol></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+      <div><a href="index.html">Kafka Detective</a></div><ol class="toc"> <li><div><a href="Using+Kafka+Detective.html">Using Kafka Detective</a></div><ol class="toc"> <li><div><a href="Environment+Pre-Requisites.html">Environment Pre-Requisites</a></div></li><li><div><a href="Configuring+Detective.html">Configuring Detective</a></div><ol class="toc"> <li><div><a href="Default+Implementations.html">Default Implementations</a></div></li> </ol></li><li><div><a href="Deploying+Detective.html">Deploying Detective</a></div></li> </ol></li><li><div class="current">Extending Kafka Detective</div><ol class="toc">  </ol></li><li><div><a href="Architecture+Overview.html">Architecture Overview</a></div><ol class="toc">  </ol></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
           </div>
         </div>
         <div class="header">

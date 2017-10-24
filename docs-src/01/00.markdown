@@ -1,10 +1,4 @@
-## How Detective Works
+## Using Kafka Detective
 
-Kafka Detective is an end to end testing tool for applications that communicate primarily through
-streaming data over Kafka topics. This section walks through how that happens at a concrete level.
-
-Before reading this section it is helpful to have an understanding of how Apache Kafka works and
-some of the terminology associated with it. The [apache kafka intro][kafkaintro] does a good job
-of introducing these concepts.
-
-[kafkaintro]: http://kafka.apache.org/intro
+This section walks through deploying and using Kafka Detective in your environment. Each of the
+subsections walk through a different aspect of configuring and deploying Kafka Detective.

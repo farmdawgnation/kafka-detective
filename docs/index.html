@@ -32,37 +32,33 @@
         
       </head>
       <body class="color_scheme-redmond">
-        <a class="page next nav" href="How+Detective+Works.html">
+        <a class="page next nav" href="Using+Kafka+Detective.html">
             <span class="space">&nbsp;</span>
             <span class="arrow">❧</span>
           </a>
         <div class="container contentswrapper">
           <div class="span-16 prepend-1 append-1 contents">
-            <h1 id="Kafka+Detective">Kafka Detective<a href="#Kafka+Detective" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p><strong>Kafka Detective</strong> is an application for doing end-to-end testing against streaming data
-applications. Detective works by comparing the contents of two Kafka topics (potentially on
-different Kafka clusters) and ensuring that the content from the “test topic”, the topic that your
-new, candidate version of your code outputs on, has equivalent content in the “reference topic”, the
-topic that your known-good production code outputs on.
-</p><p>This document describes how to use Kafka Detective to debug your streaming data applications, how to
-extend Kafka Detective with extensions, and walks through some of the detailed architecture of
+            <h1 id="Kafka+Detective">Kafka Detective<a href="#Kafka+Detective" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><blockquote><p>This documentation site is still being refined and organized. Please file issues about anything
+  that is unclear. We also welcome pull requests from anyone who can help us better organize and
+  clarify this information.
+</p></blockquote><p><strong>Kafka Detective</strong> is a utility for performing continuous end-to-end testing of streaming data
+applications.
+</p><p>This site describes how to use Kafka Detective to debug your streaming data applications, how to
+extend Kafka Detective with extensions, and walks through some of the architecture of
 Detective.
-</p><p>In addition to this document, you may find it useful to browse the available ScalaDocs for Detective
-on this site:
-</p><ul><li><a href="scaladocs/kafka-detective-api">kafka-detective-api</a>
-</li><li><a href="scaladocs/kafka-detective-daemon">kafka-detective-daemon</a>
-</li></ul><p>We’ll try our darndest to keep this document up to date as changes come to Detective, but we
+</p><p>We’ll try our darndest to keep this document up to date as changes come to Detective, but we
 encourage you to open a PR fixing any issues you find along the way.
 </p><div class="bottom nav span-16">
                         <em>Next Page</em>
                         <span class="arrow">❧</span>
-                        <a href="How+Detective+Works.html"> How Detective Works </a>                        
+                        <a href="Using+Kafka+Detective.html"> Using Kafka Detective </a>                        
                         
                       </div><div class="tocwrapper show">
       <a class="tochead nav" style="display: none" href="#toc">❦</a>
       <a name="toc"></a>
       <h4 class="toctitle">Contents</h4>
       <div class="tocbody">
-      <div class="current">Kafka Detective</div><ol class="toc"> <li><div><a href="How+Detective+Works.html">How Detective Works</a></div><ol class="toc"> <li><div><a href="High-Level+Overview.html">High-Level Overview</a></div></li> </ol></li><li><div><a href="Extending+Kafka+Detective.html">Extending Kafka Detective</a></div><ol class="toc">  </ol></li><li><div><a href="Using+Kafka+Detective.html">Using Kafka Detective</a></div><ol class="toc"> <li><div><a href="Environment+Pre-Requisites.html">Environment Pre-Requisites</a></div></li><li><div><a href="Configuring+Detective.html">Configuring Detective</a></div></li><li><div><a href="Deploying+Detective.html">Deploying Detective</a></div></li> </ol></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+      <div class="current">Kafka Detective</div><ol class="toc"> <li><div><a href="Using+Kafka+Detective.html">Using Kafka Detective</a></div><ol class="toc"> <li><div><a href="Environment+Pre-Requisites.html">Environment Pre-Requisites</a></div></li><li><div><a href="Configuring+Detective.html">Configuring Detective</a></div><ol class="toc"> <li><div><a href="Default+Implementations.html">Default Implementations</a></div></li> </ol></li><li><div><a href="Deploying+Detective.html">Deploying Detective</a></div></li> </ol></li><li><div><a href="Extending+Kafka+Detective.html">Extending Kafka Detective</a></div><ol class="toc">  </ol></li><li><div><a href="Architecture+Overview.html">Architecture Overview</a></div><ol class="toc">  </ol></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
           </div>
         </div>
         <div class="header">

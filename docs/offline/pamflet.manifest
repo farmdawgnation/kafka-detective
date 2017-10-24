@@ -1,13 +1,13 @@
 CACHE MANIFEST
-# Sat Oct 21 12:47:56 EDT 2017
+# Mon Oct 23 20:36:49 EDT 2017
 index.html
-How+Detective+Works.html
-High-Level+Overview.html
-Extending+Kafka+Detective.html
 Using+Kafka+Detective.html
 Environment+Pre-Requisites.html
 Configuring+Detective.html
+Default+Implementations.html
 Deploying+Detective.html
+Extending+Kafka+Detective.html
+Architecture+Overview.html
 Contents+in+Depth.html
 Combined+Pages.html
 img/fork.png

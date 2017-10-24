@@ -1,3 +1,82 @@
 ## Extending Kafka Detective
 
-TODO
+Kafka Detective provides interfaces that allow you to extend its behavior. Those interfaces
+are available in the `detective-api` package in Maven Central.
+
+### Getting detective-api
+
+To get started, you'll need to pull in `detective-api` as a provided dependency for your project.
+You can write extensions in Scala 2.12 or in Java. Below are code snippets for adding `detective-api`
+to various build systems.
+
+#### SBT
+
+```
+libraryDependencies += "me.frmr.kafka" %% "detective-api" %% "$detectiveversion$" % "provided"
+```
+
+#### Gradle
+
+```
+dependencies {
+  compileOnly 'me.frmr.kafka:detective-api:$detectiveversion$'
+}
+```
+
+#### Maven
+
+```
+<dependency>
+  <groupId>me.frmr.kafka</groupId>
+  <artifactId>detective-api</artifactId>
+  <version>$detectiveversion$</version>
+  <scope>provided</scope>
+</dependency>
+```
+
+### Using detective-api
+
+Once you've got your project defined, you can defined implementations for the interfaces provided
+by the `me.frmr.kafka.detective.api` package.
+
+Scaladocs for the API can be found [here](/scaladocs/detective-api).
+
+Specifically, those interfaces are:
+
+* **MonitorDeserializer** — Provides a custom deserializer for incoming messages. A different
+  deserializer can be defined for the test and reference side to accommodate for changes in
+  serialization format.
+* **MonitorMatchFinder** - Provides a custom heuristic for determining if a message should match
+  any possible messages from a reference window.
+* **MonitorMatchTester** - Provides a custom heuristic for testing the pair produced by the
+  configured MonitorMatchFinder.
+* **MonitorReporter** - Reports matching results to an external system.
+* **MonitorReporterTransformer** - Transforms messages before sending them to the reporting
+  system. This could be used, for example, to transform the messages to JSON format.
+
+In your project you will create some custom implementation of one or more of the above interfaces.
+Then, when you're ready you'll need to use your build tool's packaging task to create a JAR of
+the compiled classes.
+
+Once you've done this, you'll want to deploy this JAR into Detective's classpath. We outline how
+to do this with the Docker image below. You will need to adjust this technique if you've deployed
+Detective differently.
+
+### Deploying via the Docker Image
+
+> This documentation assumes working knowledge of building Docker images.
+
+To deploy your custom code, we're going to make a variant of the Detective docker image that
+adds your JAR file to the `lib` folder, where Detective looks for classes. That Docker image
+can be defined with a Dockerfile as simple as:
+
+```
+FROM $dockerimage$
+
+ADD /path/to/your/jar/file.jar /opt/kafka-detective/lib/file.jar
+```
+
+You'll then build and tag that image and push it somewhere your server can access it. Then,
+all you need to do is change the appropriate config setting to use your class instead of the
+default. For example, if you had provided a custom match finder, you might change the
+`MATCH_FINDER` environment variable before running the image.
