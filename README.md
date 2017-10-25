@@ -17,7 +17,8 @@ site at https://detective.frmr.me.
 Questions, bugs, feature requests and more should all be filed as issues. Discussion about the
 project will take place in the issues system.
 
-Contributions are welcome.
+Contributions are welcome. Please see the [contribution guide](https://github.com/farmdawgnation/kafka-detective/blob/master/CONTRIBUTING.md)
+for more information.
 
 ## Building
 
