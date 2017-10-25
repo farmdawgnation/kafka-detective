@@ -56,6 +56,14 @@ isn't already working on the ticket.
 
 ## Code Contributions
 
+Code contributions are welcome from anyone. Contributors are required to certify
+that they are the owner of their contribution and that it was done on your own time with their own
+equipment **or** that their employer has agreed to permitting their contribution and that they are
+licensing their contribution to everyone else under the terms of the Apache License.
+
+Contributors certify the above by adding their name and email to CONTRIBUTORS.md when they make
+their first contribution.
+
 If you decide to make a code contribution, please follow the following protocol:
 
 1. Fork kafka-detective.
@@ -68,15 +76,17 @@ If you decide to make a code contribution, please follow the following protocol:
   3. `git fetch upstream`
   4. `git merge upstream/master`
   5. `git push origin master`
-4. Complete the work on the ticket in your feature branch. Name the branch whatever you like so
+4. If this is your first contribution, your first commit should be reading and adding your name
+  and email to CONTRIBUTORS.md
+5. Complete the work on the ticket in your feature branch. Name the branch whatever you like so
   long as it's not `master` or any other long-lived branch name in our fork. Be sure to add tests!
-5. Ensure you're following our code style. (See below.) We reserve the right to significantly
+6. Ensure you're following our code style. (See below.) We reserve the right to significantly
   alter modifications that don't conform to our code style before merging.
-6. Ensure you're writing good commit messages as you go. We reserve the right to ask you to rebase
+7. Ensure you're writing good commit messages as you go. We reserve the right to ask you to rebase
   and rewrite your commit messages if we find them difficult to follow.
-7. [Open your pull request!](https://github.com/farmdawgnation/kafka-detective/compare)
-8. Expect to contribute in a few rounds of code review with one of the committers.
-9. Once your contribution passes muster, a committer will merge your change!
+8. [Open your pull request!](https://github.com/farmdawgnation/kafka-detective/compare)
+9. Expect to contribute in a few rounds of code review with one of the committers.
+10. Once your contribution passes muster, a committer will merge your change!
 
 ### Code Style
 
