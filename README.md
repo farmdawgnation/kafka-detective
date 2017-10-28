@@ -1,16 +1,17 @@
-**Kafka Detective** is a tool for continuous end-to-end testing of streaming data applications.
+# Kafka Detective
+
+[![Build Status](https://travis-ci.org/farmdawgnation/kafka-detective.svg?branch=master)](https://travis-ci.org/farmdawgnation/kafka-detective)
+
+Kafka Detective is a tool for continuous end-to-end testing of streaming data applications.
 
 Internally at MailChimp, we use it for validating the correctness and performance of our Data
-Pipeline.
-
-**Note:** The docker image is available from Docker Hub, but we haven't gotten the api package
-on Sonatype yet. We're working on it, but if you want to write your own extensions for now
-you'll need to clone the project and publish the API to your local ivy cache.
+Pipeline. This project is stable and under active development, but documentation is an ongoing
+effort.
 
 ## Documentation
 
-For learning about how Detective works, we recommend reading our (work-in-progress) documentation
-site at https://detective.frmr.me.
+For learning about how Detective works, we recommend reading our documentation
+site: https://detective.frmr.me.
 
 ## Getting in Touch and Contributing
 
