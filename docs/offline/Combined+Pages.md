@@ -308,8 +308,6 @@ To get started, you'll need to pull in `detective-api` as a provided dependency 
 You can write extensions in Scala 2.12 or in Java. Below are code snippets for adding `detective-api`
 to various build systems.
 
-> As of the time of this writing, detective-api isn't yet available on Maven Central. You can download the JAR from the [release notes](https://github.com/farmdawgnation/kafka-detective/releases/tag/0.7.1).
-
 #### SBT
 
 ```
