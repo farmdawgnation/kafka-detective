@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/farmdawgnation/kafka-detective.svg?branch=master)](https://travis-ci.org/farmdawgnation/kafka-detective)
 [![Maven Central](https://img.shields.io/maven-central/v/me.frmr.kafka/detective-api_2.12.svg)]()
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/872abfe7511b49998707a4aabb2b4691)](https://www.codacy.com/app/farmdawgnation/kafka-detective?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=farmdawgnation/kafka-detective&amp;utm_campaign=Badge_Grade)
 
 Kafka Detective is a tool for continuous end-to-end testing of streaming data applications.
 
