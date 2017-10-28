@@ -17,7 +17,7 @@ script:
   - docker build -t farmdawgnation/kafka-detective:$VERSION .
 
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+  - if [[ "$TRAVIS_BRANCH" == "master" ]] && [[ ! "$VERSION" == *SNAPSHOT ]]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker push farmdawgnation/kafka-detective:$VERSION;
     fi
