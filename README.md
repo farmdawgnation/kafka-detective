@@ -1,6 +1,7 @@
 # Kafka Detective
 
 [![Build Status](https://travis-ci.org/farmdawgnation/kafka-detective.svg?branch=master)](https://travis-ci.org/farmdawgnation/kafka-detective)
+[![Maven Central](https://img.shields.io/maven-central/v/me.frmr.kafka/detective-api.svg)]()
 
 Kafka Detective is a tool for continuous end-to-end testing of streaming data applications.
 
